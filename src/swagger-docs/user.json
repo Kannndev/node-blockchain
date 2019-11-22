@@ -1,0 +1,50 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "user",
+    "description": "To fetch the user ping message",
+    "version": "1.0"
+  },
+  "produces": ["application/json"],
+  "host": "",
+  "basePath": "/user",
+  "schemes": ["http"],
+  "paths": {
+    "/": {
+      "get": {
+        "summary": "Ping Test",
+        "description": "To Dispaly the welcome message",
+        "responses": {
+          "200": {
+            "description": "An array of users objects",
+            "schema": {
+              "$ref": "#/definitions/user"
+            }
+          },
+          "400": {
+            "description": "The server was unable to process the request sent by the client due to invalid syntax."
+          },
+          "404": {
+            "description": "Returns 404 when no records available."
+          },
+          "500": {
+            "description": "Something has gone wrong on the server, but the server could not be more specific on what the exact problem is."
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "user": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}
