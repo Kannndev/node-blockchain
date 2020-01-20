@@ -30,35 +30,35 @@ function configBlockChain() {
   const myWalletAddress = myKey.getPublic('hex');
 
   // Create new instance of Blockchain class
-  const savjeeCoin = new Blockchain();
+  const myCoin = new Blockchain();
 
   // Create a transaction & sign it with your key
   const tx1 = new Transaction(myWalletAddress, 'address2', 100);
   tx1.signTransaction(myKey);
-  savjeeCoin.addTransaction(tx1);
+  myCoin.addTransaction(tx1);
 
   // Mine block
-  savjeeCoin.minePendingTransactions(myWalletAddress);
+  myCoin.minePendingTransactions(myWalletAddress);
 
   // Create second transaction
   const tx2 = new Transaction(myWalletAddress, 'address1', 50);
   tx2.signTransaction(myKey);
-  savjeeCoin.addTransaction(tx2);
+  myCoin.addTransaction(tx2);
 
   // Mine block
-  savjeeCoin.minePendingTransactions(myWalletAddress);
+  myCoin.minePendingTransactions(myWalletAddress);
 
   console.log();
   console.log(
-    `Balance of xavier is ${savjeeCoin.getBalanceOfAddress(myWalletAddress)}`
+    `Balance of xavier is ${myCoin.getBalanceOfAddress(myWalletAddress)}`
   );
 
   // Uncomment this line if you want to test tampering with the chain
-  // savjeeCoin.chain[1].transactions[0].amount = 10;
+  // myCoin.chain[1].transactions[0].amount = 10;
 
   // Check if the chain is valid
   console.log();
-  console.log('Blockchain valid?', savjeeCoin.isChainValid() ? 'Yes' : 'No');
+  console.log('Blockchain valid?', myCoin.isChainValid() ? 'Yes' : 'No');
 }
 
 configBlockChain();
