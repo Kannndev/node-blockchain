@@ -27,6 +27,7 @@ export class UserController {
         new UserSchema().getPingResponse(),
         result
       );
+      await this.userManager.publishMessage(validatedResponse);
       response.send(validatedResponse);
     } catch (error) {
       response.status(500).send(error);
