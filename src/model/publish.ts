@@ -1,8 +1,12 @@
 export class Publish {
   public publishBlock(block) {
-    return global['channel'].sendToQueue(
-      global['queueName'],
-      new Buffer(JSON.stringify(block))
-    );
+    try {
+      global['channel'].assertExchange('groupchat', 'fanout', {
+        durable: false
+      });
+      return global['channel'].publish('groupchat', '', new Buffer(JSON.stringify(block)));
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
