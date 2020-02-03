@@ -4,7 +4,7 @@ import { JoiValidator } from '../config';
 import { UserSchema } from '../schema';
 
 export class UserController {
-  public static route = '/user';
+  public static route = '/send';
   public router: Router;
   private userManager: UserManager;
   private joiValidator: JoiValidator;
@@ -17,12 +17,12 @@ export class UserController {
   }
 
   public init() {
-    this.router.get('/', this.ping);
+    this.router.post('/', this.ping);
   }
 
   public ping = async (request, response, nextFunction) => {
     try {
-      const result = { name: 'Test', message: 'Welcome' };
+      const result = request.body;
       const validatedResponse = await this.joiValidator.jsonValidator(
         new UserSchema().getPingResponse(),
         result
