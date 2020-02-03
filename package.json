@@ -38,6 +38,7 @@
     "swagger-express-router": "1.0.0",
     "swagger-jsdoc": "1.9.7",
     "swagger-ui-express": "2.0.14",
+    "uuid": "^3.4.0",
     "winston": "^3.2.1"
   }
 }

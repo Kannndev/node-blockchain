@@ -1,10 +1,10 @@
 export class Publish {
-  public publishBlock(block) {
+  public publishBlock(name, block) {
     try {
-      global['channel'].assertExchange('groupchat', 'fanout', {
+      global['channel'].assertExchange(name, 'fanout', {
         durable: false
       });
-      return global['channel'].publish('groupchat', '', new Buffer(JSON.stringify(block)));
+      return global['channel'].publish(name, '', new Buffer(JSON.stringify(block)));
     } catch (err) {
       console.log(err);
     }

@@ -44,6 +44,7 @@ amqp.connect(CONN_URL, (err, conn) => {
       global['channel'] = channel;
       global['queueName'] = 'demo-msgs';
       new Subscribe().subscribeBlock();
+      new Subscribe().subscribeBlockAck();
    });
 });
 
