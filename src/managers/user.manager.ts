@@ -76,7 +76,7 @@ export class UserManager {
         ackBlocks[blockData.uuid] = parseInt(ackBlocks[blockData.uuid], 10);
         ackBlocks[blockData.uuid] = ackBlocks[blockData.uuid]
           ? ackBlocks[blockData.uuid] + 1
-          : 2;
+          : 1;
         if (ackBlocks[blockData.uuid] === 2) {
           let messageList = await blockChain.getAllBlocks();
           if (!messageList || !messageList.length) {
