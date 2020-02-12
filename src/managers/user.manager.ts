@@ -96,4 +96,18 @@ export class UserManager {
       throw err;
     }
   };
+
+  public initiateChain = async () => {
+    try {
+      const blockChain = new Blockchain();
+      const genesisBlock = blockChain.createGenesisBlock();
+      await fsPromises.writeFile(
+        __dirname + '/../../info.txt',
+        JSON.stringify([genesisBlock])
+      );
+      return true;
+    } catch (err) {
+      throw err;
+    }
+  }
 }

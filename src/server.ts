@@ -5,6 +5,7 @@ import { AppSetting, logger } from './config';
 import { ApiRouting } from './api.routing';
 import { SwaggerController } from './controllers/swagger.controller';
 import { Subscribe } from './model';
+import { UserManager } from './managers/user.manager';
 
 const app = express();
 const config = AppSetting.getConfig();
@@ -41,10 +42,12 @@ const CONN_URL = 'amqp://bvznphpr:MdfR_vMpY-6z0R1AfoUtlcZG9KnSM66v@shrimp.rmq.cl
 
 amqp.connect(CONN_URL, (err, conn) => {
    conn.createChannel((error, channel) => {
+      const userManager = new UserManager();
       global['channel'] = channel;
       global['queueName'] = 'demo-msgs';
       new Subscribe().subscribeBlock();
       new Subscribe().subscribeBlockAck();
+      userManager.initiateChain();
    });
 });
 

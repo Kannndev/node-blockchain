@@ -18,6 +18,12 @@ export class Blockchain {
     return chain[chain.length - 1];
   }
 
+  public createGenesisBlock() {
+    return new Block(
+      'now',
+      'Genesis Block'
+    );
+  }
   public async getAllBlocks() {
     let blocks;
     try {
@@ -37,6 +43,9 @@ export class Blockchain {
   }
 
   public isChainValid(chain) {
+    if (chain[0].hash !== this.createGenesisBlock().hash) {
+      return false;
+    }
     for (let i = 1; i < chain.length; i++) {
       const currentBlock = chain[i];
       if (
@@ -47,6 +56,13 @@ export class Blockchain {
           chain[i - 1].previousHash
         ).calculateHash()
       ) {
+        return false;
+      }
+      if (currentBlock.hash !== new Block(
+        chain[i].timestamp,
+        chain[i].transactions,
+        chain[i].previousHash
+      ).calculateHash()) {
         return false;
       }
     }
