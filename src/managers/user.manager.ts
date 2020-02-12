@@ -105,6 +105,10 @@ export class UserManager {
         __dirname + '/../../info.txt',
         JSON.stringify([genesisBlock])
       );
+      await fsPromises.writeFile(
+        __dirname + '/../../ackBlock.txt',
+        JSON.stringify({})
+      );
       return true;
     } catch (err) {
       throw err;
