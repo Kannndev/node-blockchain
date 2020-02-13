@@ -21,7 +21,12 @@ export class Blockchain {
   public createGenesisBlock() {
     return new Block(
       'now',
-      'Genesis Block'
+      {
+        "sender": "ascascsa",
+        "title": "Group Chat",
+        "message": "Hi! ascsacsa",
+        "sentOn": "2020-02-03"
+      }
     );
   }
   public async getAllBlocks() {
