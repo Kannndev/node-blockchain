@@ -19,15 +19,12 @@ export class Blockchain {
   }
 
   public createGenesisBlock() {
-    return new Block(
-      'now',
-      {
-        "sender": "ascascsa",
-        "title": "Group Chat",
-        "message": "Hi! ascsacsa",
-        "sentOn": "2020-02-03"
-      }
-    );
+    return new Block('now', {
+      sender: 'ascascsa',
+      title: 'Group Chat',
+      message: 'Hi! ascsacsa',
+      sentOn: '2020-02-03'
+    });
   }
   public async getAllBlocks() {
     let blocks;
@@ -63,11 +60,14 @@ export class Blockchain {
       ) {
         return false;
       }
-      if (currentBlock.hash !== new Block(
-        chain[i].timestamp,
-        chain[i].transactions,
-        chain[i].previousHash
-      ).calculateHash()) {
+      if (
+        currentBlock.hash !==
+        new Block(
+          chain[i].timestamp,
+          chain[i].transactions,
+          chain[i].previousHash
+        ).calculateHash()
+      ) {
         return false;
       }
     }

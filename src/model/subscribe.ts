@@ -32,4 +32,26 @@ export class Subscribe {
       );
     });
   }
+
+  public subscribeNewMember() {
+    try {
+      global['channel'].assertExchange('newMember', 'fanout', {
+        durable: false
+      });
+      global['channel'].assertQueue('', { exclusive: true }, (err, q) => {
+        global['channel'].bindQueue(q.queue, 'newMember', '');
+        global['channel'].consume(
+          q.queue,
+          msg => {
+            console.log('New member: ', msg.content.toString());
+            const userManager = new UserManager();
+            userManager.sendBlockchain(JSON.parse(msg.content.toString()));
+          },
+          { noAck: true }
+        );
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }
 }
