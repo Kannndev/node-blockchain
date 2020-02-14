@@ -7,8 +7,8 @@ import { SwaggerController } from './controllers/swagger.controller';
 import { Subscribe } from './model';
 import { UserManager } from './managers/user.manager';
 var http = require('http')
-var io = require('socket.io')(http);
-import { emit } from './model/Socket'
+
+import { emit, socketEmit } from './model/Socket'
 
 const app = express();
 const config = AppSetting.getConfig();
@@ -53,18 +53,8 @@ amqp.connect(CONN_URL, (err, conn) => {
 		userManager.initiateChain();
 	});
 });
-emit("chat message", "atcccccccccccccc dataaaaaa")
-// io.on('connection', function (socket) {
-// 	console.log('a user connected');
-// 	socket.on('chat message', function (msg) {
-// 		io.emit('chat message', msg);
-// 		console.log(msg)
-// 	});
-// 	socket.on('disconnect', function () {
-// 		console.log('user disconnected');
-// 	});
-// });
 
+socketEmit();
 process
 	.on('warning', reason => {
 		logger.warn(reason.toString());
