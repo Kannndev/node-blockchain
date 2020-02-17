@@ -69,6 +69,7 @@ amqp.connect(CONN_URL, (err, conn) => {
 });
 
 socketEmit();
+
 process
   .on('warning', reason => {
     logger.warn(reason.toString());

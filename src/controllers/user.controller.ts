@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { UserManager } from '../managers';
 import { JoiValidator } from '../config';
 import { UserSchema } from '../schema';
+import { emit } from '../model/Socket';
 
 export class UserController {
   public static route = '/blockchain';
@@ -24,6 +25,7 @@ export class UserController {
 
   public ping = async (request, response, nextFunction) => {
     try {
+      emit('customEmit', 'New Block / Message Received');
       const result = request.body;
       const validatedResponse = await this.joiValidator.jsonValidator(
         new UserSchema().getPingResponse(),
@@ -48,6 +50,7 @@ export class UserController {
   public receiveBlockChain = async (request, response, nextFunction) => {
     try {
       response.status(200).send('Block Received');
+      emit('customEmit', 'Receving the ledger data from peers');
       await this.userManager.validateAndReplaceChain(
         JSON.parse(request.body.blockChain)
       );

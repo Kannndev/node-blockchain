@@ -3,6 +3,8 @@ import uuid from 'uuid';
 import rp from 'request-promise';
 import * as fs from 'fs';
 import ip from 'ip';
+import { emit } from './../model/Socket';
+
 const fsPromises = fs.promises;
 
 export class UserManager {
@@ -29,6 +31,7 @@ export class UserManager {
       }
       // publish block to all
       await this.publishBlock('groupchat', { uuid: uuid(), block: newBlock });
+      emit('customEmit', 'Published to Network');
       // save valid chain in file
       // if (newBlock && isChainValid) {
       //   await blockChain.saveBlocks(messageList);
@@ -56,10 +59,12 @@ export class UserManager {
       const messageList = await blockChain.getAllBlocks();
       if (!messageList || !messageList.length) {
         await this.publishBlock('ackChat', { isValid: true, ...block });
+        emit('customEmit', 'Acknowledged the block');
       } else {
         messageList.push(block.block);
         isChainValid = blockChain.isChainValid(messageList);
         if (!isChainValid) {
+          emit('customEmit', 'Validation Failed, Data might be Tampered. Initiating data request');
           await fsPromises.writeFile(
             __dirname + '/../../info.txt',
             JSON.stringify([])
@@ -67,7 +72,7 @@ export class UserManager {
           new Publish().publishBlock('newMember', {
             apiURL: `http://${ip.address()}:${
               global['port']
-            }/blockchain/receive`,
+              }/blockchain/receive`,
             httpMethod: 'POST'
           });
         }
@@ -98,11 +103,13 @@ export class UserManager {
           } else {
             messageList.push(blockData.block);
           }
+          emit('customEmit', 'Writing to ledger');
           await blockChain.saveBlocks(messageList);
+          emit('refresh', '')
         }
         await fsPromises.writeFile(
           __dirname + '/../../ackBlock.txt',
-          JSON.stringify(ackBlocks)
+          JSON.stringify(ackBlocks, null, 2)
         );
       }
       return true;
@@ -117,11 +124,11 @@ export class UserManager {
       const genesisBlock = blockChain.createGenesisBlock();
       await fsPromises.writeFile(
         __dirname + '/../../info.txt',
-        JSON.stringify([genesisBlock])
+        JSON.stringify([genesisBlock], null, 2)
       );
       await fsPromises.writeFile(
         __dirname + '/../../ackBlock.txt',
-        JSON.stringify({})
+        JSON.stringify({}, null, 2)
       );
       return true;
     } catch (err) {
@@ -168,10 +175,12 @@ export class UserManager {
       if (reqBlockChain.length > myBlockChain.length) {
         isChainValid = blockChain.isChainValid(reqBlockChain);
         if (isChainValid) {
+          emit('customEmit', 'Writing to ledger');
           await fsPromises.writeFile(
             __dirname + '/../../info.txt',
-            JSON.stringify(reqBlockChain)
+            JSON.stringify(reqBlockChain, null, 2)
           );
+          emit('refresh', '');
         }
       }
     } catch (err) {

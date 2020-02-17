@@ -1,5 +1,7 @@
 import { Block } from './index';
 import * as fs from 'fs';
+import { emit } from './Socket';
+
 const fsPromises = fs.promises;
 
 export class Blockchain {
@@ -40,11 +42,12 @@ export class Blockchain {
   public async saveBlocks(blockList) {
     return fsPromises.writeFile(
       __dirname + '/../../info.txt',
-      JSON.stringify(blockList)
+      JSON.stringify(blockList, null, 2)
     );
   }
 
   public isChainValid(chain) {
+    emit('customEmit', 'Validating Chain');
     if (chain[0].hash !== this.createGenesisBlock().hash) {
       return false;
     }
