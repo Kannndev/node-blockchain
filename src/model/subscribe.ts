@@ -1,6 +1,7 @@
 import { UserManager } from '../managers';
 
 export class Subscribe {
+  // Whenever a new transaction is published in the network it will be subscribed here
   public subscribeBlock() {
     global['channel'].assertExchange('groupchat', 'fanout', { durable: false });
     global['channel'].assertQueue('', { exclusive: true }, (err, q) => {
@@ -17,6 +18,7 @@ export class Subscribe {
     });
   }
 
+  // Whenever a new block is acknowledged by peer nodes it is subscribed here
   public subscribeBlockAck() {
     global['channel'].assertExchange('ackChat', 'fanout', { durable: false });
     global['channel'].assertQueue('', { exclusive: true }, (err, q) => {
@@ -33,6 +35,7 @@ export class Subscribe {
     });
   }
 
+  // Whenever a new member joins in network it is subscribed here
   public subscribeNewMember() {
     try {
       global['channel'].assertExchange('newMember', 'fanout', {

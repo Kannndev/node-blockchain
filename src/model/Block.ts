@@ -5,13 +5,20 @@ export class Block {
   public transactions;
   public nonce;
   public hash;
+  public transactionType;
 
-  constructor(timestamp, transactions, previousHash = '') {
+  constructor(
+    timestamp,
+    transactions,
+    previousHash = '',
+    transactionType = ''
+  ) {
     this.previousHash = previousHash;
     this.timestamp = timestamp;
     this.transactions = transactions;
     this.nonce = 0;
     this.hash = this.calculateHash();
+    this.transactionType = transactionType;
   }
 
   /**

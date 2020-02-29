@@ -8,11 +8,12 @@ export class Blockchain {
   /**
    * @returns {Block}
    */
-  public createBlock(message, previousHash = '') {
+  public createBlock(message, previousHash = '', transactionType = '') {
     return new Block(
       Date.parse(new Date().toDateString()),
       message,
-      previousHash
+      previousHash,
+      transactionType
     );
   }
 
@@ -22,9 +23,9 @@ export class Blockchain {
 
   public createGenesisBlock() {
     return new Block('now', {
-      sender: 'ascascsa',
+      sender: 'John',
       title: 'Group Chat',
-      message: 'Hi! ascsacsa',
+      message: 'Hi! Everyone',
       sentOn: '2020-02-03'
     });
   }

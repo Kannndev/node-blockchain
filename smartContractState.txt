@@ -1,0 +1,23 @@
+{
+  "1c9170205e7341a20a1e3ffb20c639859a291f5412ea74637aca8d0bef0f75db": {
+    "assetStore": [
+      {
+        "name": "Iphone",
+        "uuid": 1
+      },
+      {
+        "name": "Samsung",
+        "uuid": 2
+      },
+      {
+        "name": "Mi",
+        "uuid": 3
+      }
+    ],
+    "assetHolders": {
+      "1": "John",
+      "2": "Roshan",
+      "3": "Sabari"
+    }
+  }
+}
