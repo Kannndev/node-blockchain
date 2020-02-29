@@ -3,7 +3,22 @@ import { UserManager } from '../managers';
 import { JoiValidator } from '../config';
 import { UserSchema } from '../schema';
 import { emit } from '../model/Socket';
+const multer = require('multer');
+const fs = require('fs');
+const dir = './uploads';
 
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir);
+    }
+    cb(null, dir)
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + '-' + Date.now() + '.txt')
+  }
+});
+const upload = multer({ storage });
 export class UserController {
   public static route = '/blockchain';
   public router: Router;
@@ -21,8 +36,12 @@ export class UserController {
     this.router.post('/', this.ping);
     this.router.get('/all', this.GetAllMessages);
     this.router.post('/receive', this.receiveBlockChain);
+    this.router.post('/fileupload', upload.single('file'), this.fileUpload);
   }
 
+  public fileUpload = async (request, response, nextFunction) => {
+    response.send('File Uploaded')
+  }
   public ping = async (request, response, nextFunction) => {
     try {
       emit('customEmit', 'New Block / Message Received');
