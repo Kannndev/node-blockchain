@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { UserManager } from '../managers';
+import { BlockchainManager } from '../managers';
 import { JoiValidator } from '../config';
 import { UserSchema } from '../schema';
 import { emit } from '../model/Socket';
@@ -23,14 +23,14 @@ const storage = multer.diskStorage({
 });
 
 const upload = multer({ storage });
-export class UserController {
+export class BlockchainController {
   public static route = '/blockchain';
   public router: Router;
-  private userManager: UserManager;
+  private blockchainManager: BlockchainManager;
   private joiValidator: JoiValidator;
 
   constructor() {
-    this.userManager = new UserManager();
+    this.blockchainManager = new BlockchainManager();
     this.joiValidator = new JoiValidator();
     this.router = Router();
     this.init();
@@ -56,7 +56,10 @@ export class UserController {
         new UserSchema().getPingResponse(),
         result
       );
-      const res = await this.userManager.publishMessage(validatedResponse, '');
+      const res = await this.blockchainManager.publishMessage(
+        validatedResponse,
+        ''
+      );
       response.send(res);
     } catch (error) {
       response.status(500).send(error);
@@ -65,7 +68,7 @@ export class UserController {
 
   public GetAllMessages = async (request, response, nextFunction) => {
     try {
-      const result = await this.userManager.GetAllMessages();
+      const result = await this.blockchainManager.GetAllMessages();
       response.send({ data: result.length ? JSON.parse(result) : [] });
     } catch (error) {
       response.status(500).send(error);
@@ -76,7 +79,7 @@ export class UserController {
     try {
       response.status(200).send('Block Received');
       emit('customEmit', 'Receving the ledger data from peers');
-      await this.userManager.validateAndReplaceChain(
+      await this.blockchainManager.validateAndReplaceChain(
         JSON.parse(request.body.blockChain)
       );
     } catch (error) {
@@ -93,7 +96,7 @@ export class UserController {
         type: 'smartContract',
         contractDetails: fileBuffer.toString()
       };
-      const res = await this.userManager.publishMessage(
+      const res = await this.blockchainManager.publishMessage(
         message,
         TransactionTypes.SmartContractCreation
       );
@@ -107,7 +110,7 @@ export class UserController {
     try {
       const payload = request.body;
       emit('customEmit', 'Publishing a smart contract call to network');
-      const res = await this.userManager.publishMessage(
+      const res = await this.blockchainManager.publishMessage(
         payload,
         TransactionTypes.SmartContractExecution
       );

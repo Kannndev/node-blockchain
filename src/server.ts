@@ -6,10 +6,10 @@ import { AppSetting, logger } from './config';
 import { ApiRouting } from './api.routing';
 import { SwaggerController } from './controllers/swagger.controller';
 import { Subscribe, Publish } from './model';
-import { UserManager } from './managers/user.manager';
-var http = require('http')
+import { BlockchainManager } from './managers/blockchain.manager';
+const http = require('http');
 
-import { emit, socketEmit } from './model/Socket'
+import { emit, socketEmit } from './model/Socket';
 
 const app = express();
 const config = AppSetting.getConfig();
@@ -48,14 +48,14 @@ const CONN_URL =
 amqp.connect(CONN_URL, (err, conn) => {
   conn.createChannel(async (error, channel) => {
     try {
-      const userManager = new UserManager();
+      const blockchainManager = new BlockchainManager();
       const subscribe = new Subscribe();
       global['channel'] = channel;
       global['queueName'] = 'demo-msgs';
       subscribe.subscribeBlock();
       subscribe.subscribeBlockAck();
       await subscribe.subscribeNewMember();
-      userManager.initiateChain();
+      blockchainManager.initiateChain();
       setTimeout(() => {
         new Publish().publishBlock('newMember', {
           apiURL: `http://${ip.address()}:${global['port']}/blockchain/receive`,

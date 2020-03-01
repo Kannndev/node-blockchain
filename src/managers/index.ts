@@ -1,1 +1,1 @@
-export * from './user.manager';
+export * from './blockchain.manager';

@@ -3,11 +3,11 @@ import uuid from 'uuid';
 import rp from 'request-promise';
 import * as fs from 'fs';
 import ip from 'ip';
-import { emit } from './../model/Socket';
+import { emit } from '../model/Socket';
 
 const fsPromises = fs.promises;
 
-export class UserManager {
+export class BlockchainManager {
   public publishMessage = async (messagePayload, transactionType) => {
     try {
       const blockChain = new Blockchain();

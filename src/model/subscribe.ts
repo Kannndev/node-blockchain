@@ -1,4 +1,4 @@
-import { UserManager } from '../managers';
+import { BlockchainManager } from '../managers';
 
 export class Subscribe {
   // Whenever a new transaction is published in the network it will be subscribed here
@@ -10,8 +10,10 @@ export class Subscribe {
         q.queue,
         msg => {
           console.log('Message Received: ', msg.content.toString());
-          const userManager = new UserManager();
-          userManager.validateAndAckBlock(JSON.parse(msg.content.toString()));
+          const blockchainManager = new BlockchainManager();
+          blockchainManager.validateAndAckBlock(
+            JSON.parse(msg.content.toString())
+          );
         },
         { noAck: true }
       );
@@ -27,8 +29,8 @@ export class Subscribe {
         q.queue,
         msg => {
           console.log('Message Ack: ', msg.content.toString());
-          const userManager = new UserManager();
-          userManager.addBlock(JSON.parse(msg.content.toString()));
+          const blockchainManager = new BlockchainManager();
+          blockchainManager.addBlock(JSON.parse(msg.content.toString()));
         },
         { noAck: true }
       );
@@ -47,8 +49,10 @@ export class Subscribe {
           q.queue,
           msg => {
             console.log('New member: ', msg.content.toString());
-            const userManager = new UserManager();
-            userManager.sendBlockchain(JSON.parse(msg.content.toString()));
+            const blockchainManager = new BlockchainManager();
+            blockchainManager.sendBlockchain(
+              JSON.parse(msg.content.toString())
+            );
           },
           { noAck: true }
         );
