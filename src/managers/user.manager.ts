@@ -13,6 +13,7 @@ export class UserManager {
       const blockChain = new Blockchain();
       let newBlock;
       const messageList = await blockChain.getAllBlocks();
+
       if (!messageList || !messageList.length) {
         newBlock = blockChain.createBlock(messagePayload);
       } else {
@@ -63,22 +64,27 @@ export class UserManager {
     try {
       const blockChain = new Blockchain();
       let isChainValid = false;
+      let isSmartContractExecuted = true;
       const messageList = await blockChain.getAllBlocks();
+
       if (!messageList || !messageList.length) {
         await this.publishBlock('ackChat', { isValid: true, ...block });
         emit('customEmit', 'Acknowledged the block');
       } else {
         messageList.push(block.block);
         isChainValid = blockChain.isChainValid(messageList);
+
         if (
           block.block.transactionType ===
           TransactionTypes.SmartContractExecution
         ) {
-          isChainValid = await this.executeSmartContract(
+          isSmartContractExecuted = await this.executeSmartContract(
             block.block.transactions,
             false
           );
         }
+
+        // If chain is not valid that means ledger data is tampered.
         if (!isChainValid) {
           emit(
             'customEmit',
@@ -95,7 +101,13 @@ export class UserManager {
             httpMethod: 'POST'
           });
         }
-        await this.publishBlock('ackChat', { isValid: isChainValid, ...block });
+
+        if (isChainValid && isSmartContractExecuted) {
+          await this.publishBlock('ackChat', {
+            isValid: isChainValid,
+            ...block
+          });
+        }
       }
     } catch (err) {
       throw err;
@@ -129,20 +141,25 @@ export class UserManager {
           __dirname + '/../../ackBlock.txt',
           'utf8'
         );
+
         ackBlocks = ackBlocks ? JSON.parse(ackBlocks) : {};
         ackBlocks[blockData.uuid] = parseInt(ackBlocks[blockData.uuid], 10);
         ackBlocks[blockData.uuid] = ackBlocks[blockData.uuid]
           ? ackBlocks[blockData.uuid] + 1
           : 1;
+
         if (ackBlocks[blockData.uuid] === 2) {
           let messageList = await blockChain.getAllBlocks();
+
           if (!messageList || !messageList.length) {
             messageList = [blockData.block];
           } else {
             messageList.push(blockData.block);
           }
+
           emit('customEmit', 'Writing to ledger');
           await blockChain.saveBlocks(messageList);
+
           if (
             blockData.block.transactionType ===
             TransactionTypes.SmartContractExecution
@@ -151,12 +168,16 @@ export class UserManager {
           }
           emit('refresh', '');
         }
+
         await fsPromises.writeFile(
           __dirname + '/../../ackBlock.txt',
           JSON.stringify(ackBlocks, null, 2)
         );
       } else {
-        emit('customEmit', 'Not a valid transaction ignoring the block');
+        emit(
+          'customEmit',
+          'Not a valid transaction acknowledgement by peers ignoring the block'
+        );
       }
       return true;
     } catch (err) {
