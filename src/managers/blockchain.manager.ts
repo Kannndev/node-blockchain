@@ -97,16 +97,19 @@ export class BlockchainManager {
           new Publish().publishBlock('newMember', {
             apiURL: `http://${ip.address()}:${
               global['port']
-            }/blockchain/receive`,
+              }/blockchain/receive`,
             httpMethod: 'POST'
           });
         }
 
         if (isChainValid && isSmartContractExecuted) {
-          await this.publishBlock('ackChat', {
-            isValid: isChainValid,
-            ...block
-          });
+          const randomNumber = Math.floor(Math.random() * 6) + 1
+          setTimeout(async () => {
+            await this.publishBlock('ackChat', {
+              isValid: isChainValid,
+              ...block
+            });
+          }, randomNumber * 1000)
         }
       }
     } catch (err) {
@@ -135,8 +138,10 @@ export class BlockchainManager {
       }
     }; */
     try {
+      emit('customEmit', 'In Add block')
       const blockChain = new Blockchain();
       if (blockData.isValid) {
+
         let ackBlocks: any = await fsPromises.readFile(
           __dirname + '/../../ackBlock.txt',
           'utf8'
@@ -147,7 +152,7 @@ export class BlockchainManager {
         ackBlocks[blockData.uuid] = ackBlocks[blockData.uuid]
           ? ackBlocks[blockData.uuid] + 1
           : 1;
-
+        emit('customEmit', JSON.stringify(ackBlocks))
         if (ackBlocks[blockData.uuid] === 2) {
           let messageList = await blockChain.getAllBlocks();
 
