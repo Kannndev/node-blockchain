@@ -8,10 +8,10 @@ export class Subscribe {
       global['channel'].bindQueue(q.queue, 'groupchat', '');
       global['channel'].consume(
         q.queue,
-        msg => {
+        async (msg) => {
           console.log('Message Received: ', msg.content.toString());
           const blockchainManager = new BlockchainManager();
-          blockchainManager.validateAndAckBlock(
+          await blockchainManager.validateAndAckBlock(
             JSON.parse(msg.content.toString())
           );
         },
@@ -27,10 +27,10 @@ export class Subscribe {
       global['channel'].bindQueue(q.queue, 'ackChat', '');
       global['channel'].consume(
         q.queue,
-        msg => {
+        async (msg) => {
           console.log('Message Ack: ', msg.content.toString());
           const blockchainManager = new BlockchainManager();
-          blockchainManager.addBlock(JSON.parse(msg.content.toString()));
+          await blockchainManager.addBlock(JSON.parse(msg.content.toString()));
         },
         { noAck: true }
       );
